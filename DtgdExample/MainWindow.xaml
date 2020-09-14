@@ -4,9 +4,41 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DtgdExample"
+        xmlns:convertors="clr-namespace:DtgdExample.Config"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+
+    <Window.Resources>
+
+        <convertors:ColorConverterBackGround  x:Key="ColorConverterBackground"></convertors:ColorConverterBackGround>
+
+    </Window.Resources>
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="388*"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="DtgdExample"   
+                  HorizontalGridLinesBrush="{x:Null}" VerticalGridLinesBrush="#FF4E7294" CanUserAddRows="False" CanUserDeleteRows="False" 
+                  GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
+                   RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1">
+
+            <DataGrid.Columns>
+
+
+                <DataGridTextColumn IsReadOnly="True" Header="Номер" Binding="{Binding NumberRow}" >
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding ColorBackground, Converter={StaticResource ColorConverterBackground}}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="Название" Binding="{Binding Name}" />
+
+
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>
