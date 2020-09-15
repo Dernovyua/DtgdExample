@@ -67,7 +67,13 @@ namespace DtgdExample
 
         }
 
-
+        private void BtnChangeColor_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < _exampleModels.Count; i++)
+            {
+                _exampleModels[i].AddColumn[0].Color = Colors.Green.ToString();
+            }
+        }
     }
 
 
