@@ -55,11 +55,11 @@ namespace DtgdExample
             for (int i = 0; i < 1; i++)
             {
                 DataGridTextColumn item = new DataGridTextColumn();
-                Style st = new Style();
-                st.Setters.Add(new Setter(TextBlock.BackgroundProperty, new Binding("ColorBackground") { Converter = new ColorConverterBackGround() }));
-                item.ElementStyle = st;
                 item.Header = "Дополнительная колонка " + (i+1);
                 item.Binding = new Binding("AddColumn[" + i + "].Value");
+                Style DynamicStyle = new Style();
+                DynamicStyle.Setters.Add(new Setter(TextBlock.BackgroundProperty, new Binding("AddColumn[" + i + "].Color") { Converter = new ColorConverterBackGround() })); // Добавляю стиль с нужным конвертером и данные для него руками
+                item.ElementStyle = DynamicStyle;
                 //item.CellStyle = (Style)Resources["ColorConverterBackground"+i]; //??? не подтягивает значения, возможно чего-то не хватает
                 DtgdExample.Columns.Add(item);
 
