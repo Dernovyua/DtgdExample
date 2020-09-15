@@ -1,4 +1,5 @@
-﻿using DtgdExample.Models;
+﻿using DtgdExample.Config;
+using DtgdExample.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,14 +36,13 @@ namespace DtgdExample
             for (int i = 0; i < 10; i++)
             {
                 ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
-                model.AddColumn.Add(new DynamicColumnModel { Value = i * 5, Color = Colors.Red.ToString() });
+                model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
                 _exampleModels.Add(model);
             }
 
             //правильно привязать ресурс к колонке добавленой из кода
 
             DtgdExample.ItemsSource = _exampleModels;
-
             SetNewColumn();
         }
 
@@ -55,12 +55,13 @@ namespace DtgdExample
             for (int i = 0; i < 1; i++)
             {
                 DataGridTextColumn item = new DataGridTextColumn();
-                DtgdExample.Columns.Add(item);
+                Style st = new Style();
+                st.Setters.Add(new Setter(TextBlock.BackgroundProperty, new Binding("ColorBackground") { Converter = new ColorConverterBackGround() }));
+                item.ElementStyle = st;
                 item.Header = "Дополнительная колонка " + (i+1);
-
                 item.Binding = new Binding("AddColumn[" + i + "].Value");
-
-                item.CellStyle = (Style)Resources["ColorConverterBackground"+i]; //??? не подтягивает значения, возможно чего-то не хватает
+                //item.CellStyle = (Style)Resources["ColorConverterBackground"+i]; //??? не подтягивает значения, возможно чего-то не хватает
+                DtgdExample.Columns.Add(item);
 
             }
 
