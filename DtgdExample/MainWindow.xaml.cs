@@ -24,11 +24,7 @@ namespace DtgdExample
     /// </summary>
     public partial class MainWindow : Window
     {
-        History _history;
-        /// <summary>
-        /// The bound list.
-        /// </summary>
-
+        History<ExampleModel> History;
 
         #region DraggedItem
 
@@ -55,8 +51,8 @@ namespace DtgdExample
             InitializeComponent();
         }
 
-        public ObservableCollection<ExampleModel> ShareList = new ObservableCollection<ExampleModel>();
-        ObservableCollection<ColumnDetail> _columnDetails = new ObservableCollection<ColumnDetail>();
+        public ObservableCollection<ExampleModel> ExampleModelCollection = new ObservableCollection<ExampleModel>();
+        public ObservableCollection<ColumnDetail> ColumnDetails = new ObservableCollection<ColumnDetail>();
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -67,22 +63,24 @@ namespace DtgdExample
                 Properties.Settings.Default.Save();
             }
 
-            _history = new History();
-            ShareList = _history.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
-            if (ShareList.Count == 0)
+            History = new History<ExampleModel>();
+
+            ExampleModelCollection = History.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
+
+            if (ExampleModelCollection.Count == 0)
             {
                 //в случае обычно привязки все довольно просто
                 for (int i = 0; i < 10; i++)
                 {
                     ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
                     model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
-                    ShareList.Add(model);
+                    ExampleModelCollection.Add(model);
                 }
             }
 
             //правильно привязать ресурс к колонке добавленой из кода
 
-            DtgdExample.ItemsSource = ShareList;
+            DtgdExample.ItemsSource = ExampleModelCollection;
             SetNewColumn();
         }
 
@@ -108,15 +106,15 @@ namespace DtgdExample
 
         private void BtnChangeColor_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < ShareList.Count; i++)
+            for (int i = 0; i < ExampleModelCollection.Count; i++)
             {
-                ShareList[i].AddColumn[0].Color = Colors.Green.ToString();
+                ExampleModelCollection[i].AddColumn[0].Color = Colors.Green.ToString();
             }
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            _history.SaveColumnDetails(ShareList, Properties.Settings.Default.PathSaveSetting);
+            History.SaveColumnDetails(ExampleModelCollection, Properties.Settings.Default.PathSaveSetting);
         }
 
 
@@ -181,12 +179,12 @@ namespace DtgdExample
             if (targetItem == null || !ReferenceEquals(DraggedItem, targetItem))
             {
                 //get target index
-                var targetIndex = ShareList.IndexOf(targetItem);
+                var targetIndex = ExampleModelCollection.IndexOf(targetItem);
                 //remove the source from the list
-                ShareList.Remove(DraggedItem);
+                ExampleModelCollection.Remove(DraggedItem);
 
                 //move source at the target's location
-                ShareList.Insert(targetIndex, DraggedItem);
+                ExampleModelCollection.Insert(targetIndex, DraggedItem);
 
                 //select the dropped item
                 DtgdExample.SelectedItem = DraggedItem;

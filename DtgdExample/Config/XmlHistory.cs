@@ -11,7 +11,7 @@ using System.Xml.Serialization;
 
 namespace DtgdExample.Config
 {
-    public class XmlHistory
+    public class XmlHistory<T>
     {
 
         public static string FilenameListColumns = "\\ListColumns.xml";
@@ -32,12 +32,12 @@ namespace DtgdExample.Config
                 {
                     if (File.Exists(path + filename))
                     {
-                        var reader = new XmlSerializer(typeof(List<ExampleModel>));
+                        var reader = new XmlSerializer(typeof(List<T>));
                         StreamReader file = new StreamReader(path + filename);
-                        List<ExampleModel> result = new List<ExampleModel>();
-                        result = (List<ExampleModel>)reader.Deserialize(file);
+                        List<T> result = new List<T>();
+                        result = (List<T>)reader.Deserialize(file);
 
-                        var res = new ObservableCollection<ExampleModel>();
+                        var res = new ObservableCollection<T>();
                         for (int i = 0; i < result.Count; i++)
                         {
                             res.Add(result[i]);
@@ -45,17 +45,15 @@ namespace DtgdExample.Config
 
                         return res;
                     }
-                    return new ObservableCollection<ExampleModel>();
+                    return new ObservableCollection<T>();
                 }
                 catch (Exception)
                 {
-                    return new ObservableCollection<ExampleModel>();
+                    return new ObservableCollection<T>();
                 }
             }
 
             #endregion
-
-
 
             return null;
         }
@@ -87,7 +85,7 @@ namespace DtgdExample.Config
             {
                 try
                 {
-                    XmlSerializer write = new XmlSerializer(typeof(List<ExampleModel>));
+                    XmlSerializer write = new XmlSerializer(typeof(List<T>));
                     using (StreamWriter file = new StreamWriter(path + filename))
                         write.Serialize(file, list);
                 }
