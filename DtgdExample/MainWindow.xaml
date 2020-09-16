@@ -13,8 +13,7 @@
         <convertors:ColorConverterBackGround  x:Key="ColorConverterBackground"></convertors:ColorConverterBackGround>
 
     </Window.Resources>
-    <Grid MouseLeftButtonUp="OnMouseLeftButtonUp"
-    MouseMove="OnMouseMove">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="388*"/>
@@ -23,7 +22,8 @@
         <DataGrid Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="DtgdExample"   
                   HorizontalGridLinesBrush="{x:Null}" VerticalGridLinesBrush="#FF4E7294" CanUserAddRows="False" CanUserDeleteRows="False" 
                   GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
-                   RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1" PreviewMouseLeftButtonDown="OnMouseLeftButtonDown" SelectionMode="Single">
+                   RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1" PreviewMouseLeftButtonDown="OnMouseLeftButtonDown" SelectionMode="Single" MouseLeftButtonUp="OnMouseLeftButtonUp"
+    MouseMove="OnMouseMove">
 
             <DataGrid.Columns>
 

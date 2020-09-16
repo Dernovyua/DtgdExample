@@ -180,11 +180,10 @@ namespace DtgdExample
 
             if (targetItem == null || !ReferenceEquals(DraggedItem, targetItem))
             {
-                //remove the source from the list
-                ShareList.Remove(DraggedItem);
-
                 //get target index
                 var targetIndex = ShareList.IndexOf(targetItem);
+                //remove the source from the list
+                ShareList.Remove(DraggedItem);
 
                 //move source at the target's location
                 ShareList.Insert(targetIndex, DraggedItem);
