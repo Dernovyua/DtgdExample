@@ -13,7 +13,8 @@
         <convertors:ColorConverterBackGround  x:Key="ColorConverterBackground"></convertors:ColorConverterBackGround>
 
     </Window.Resources>
-    <Grid>
+    <Grid MouseLeftButtonUp="OnMouseLeftButtonUp"
+    MouseMove="OnMouseMove">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="388*"/>
@@ -22,7 +23,7 @@
         <DataGrid Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="DtgdExample"   
                   HorizontalGridLinesBrush="{x:Null}" VerticalGridLinesBrush="#FF4E7294" CanUserAddRows="False" CanUserDeleteRows="False" 
                   GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
-                   RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1">
+                   RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1" PreviewMouseLeftButtonDown="OnMouseLeftButtonDown" SelectionMode="Single">
 
             <DataGrid.Columns>
 
@@ -41,6 +42,28 @@
         </DataGrid>
         <Button Content="Сменить цвет" HorizontalAlignment="Right" Margin="0,5,10,0" VerticalAlignment="Top" Width="149" Name="BtnChangeColor" Click="BtnChangeColor_Click"/>
         <Button Content="Сохранить" HorizontalAlignment="Right" Margin="0,5,164,0" VerticalAlignment="Top" Width="75" Name="BtnSave" Click="BtnSave_Click"/>
-
+        <Popup
+      x:Name="popup1"
+      IsHitTestVisible="False"
+      Placement="RelativePoint"
+      PlacementTarget="{Binding ElementName=me}"
+      AllowsTransparency="True">
+            <Border
+        BorderBrush="LightSteelBlue"
+        BorderThickness="2"
+        Background="White"
+        Opacity="0.75">
+                <StackPanel
+          Orientation="Horizontal"
+          Margin="4,3,8,3">
+                    <TextBlock
+            FontSize="14"
+            FontWeight="Bold"
+            VerticalAlignment="Center"
+            Text="{Binding ElementName=me, Path=DraggedItem.Name}"
+            Margin="8,0,0,0" />
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

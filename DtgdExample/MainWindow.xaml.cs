@@ -25,13 +25,37 @@ namespace DtgdExample
     public partial class MainWindow : Window
     {
         History _history;
+        /// <summary>
+        /// The bound list.
+        /// </summary>
+
+
+        #region DraggedItem
+
+        /// <summary>
+        /// DraggedItem Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty DraggedItemProperty =
+            DependencyProperty.Register("DraggedItem", typeof(ExampleModel), typeof(Window));
+
+        /// <summary>
+        /// Gets or sets the DraggedItem property.  This dependency property 
+        /// indicates ....
+        /// </summary>
+        public ExampleModel DraggedItem
+        {
+            get { return (ExampleModel)GetValue(DraggedItemProperty); }
+            set { SetValue(DraggedItemProperty, value); }
+        }
+
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        ObservableCollection<ExampleModel> _exampleModels = new ObservableCollection<ExampleModel>();
+        public ObservableCollection<ExampleModel> ShareList = new ObservableCollection<ExampleModel>();
         ObservableCollection<ColumnDetail> _columnDetails = new ObservableCollection<ColumnDetail>();
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -51,12 +75,12 @@ namespace DtgdExample
             {
                 ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
                 model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
-                _exampleModels.Add(model);
+                ShareList.Add(model);
             }
 
             //правильно привязать ресурс к колонке добавленой из кода
 
-            DtgdExample.ItemsSource = _exampleModels;
+            DtgdExample.ItemsSource = ShareList;
             SetNewColumn();
         }
 
@@ -82,9 +106,9 @@ namespace DtgdExample
 
         private void BtnChangeColor_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < _exampleModels.Count; i++)
+            for (int i = 0; i < ShareList.Count; i++)
             {
-                _exampleModels[i].AddColumn[0].Color = Colors.Green.ToString();
+                ShareList[i].AddColumn[0].Color = Colors.Green.ToString();
             }
         }
 
@@ -92,6 +116,126 @@ namespace DtgdExample
         {
             _history.SaveColumnDetails(_columnDetails, Properties.Settings.Default.PathSaveSetting);
         }
+
+
+        #region edit mode monitoring
+
+        /// <summary>
+        /// State flag which indicates whether the grid is in edit
+        /// mode or not.
+        /// </summary>
+        public bool IsEditing { get; set; }
+
+        private void OnBeginEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            IsEditing = true;
+            //in case we are in the middle of a drag/drop operation, cancel it...
+            if (IsDragging) ResetDragDrop();
+        }
+
+        private void OnEndEdit(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            IsEditing = false;
+        }
+
+        #endregion
+
+        #region Drag and Drop Rows
+
+        /// <summary>
+        /// Keeps in mind whether
+        /// </summary>
+        public bool IsDragging { get; set; }
+
+        /// <summary>
+        /// Initiates a drag action if the grid is not in edit mode.
+        /// </summary>
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (IsEditing) return;
+
+            var row = UIHelpers.TryFindFromPoint<DataGridRow>((UIElement)sender, e.GetPosition(DtgdExample));
+            if (row == null || row.IsEditing) return;
+
+            //set flag that indicates we're capturing mouse movements
+            IsDragging = true;
+            DraggedItem = (ExampleModel)row.Item;
+        }
+
+
+        /// <summary>
+        /// Completes a drag/drop operation.
+        /// </summary>
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!IsDragging || IsEditing)
+            {
+                return;
+            }
+
+            //get the target item
+            ExampleModel targetItem = (ExampleModel)DtgdExample.SelectedItem;
+
+            if (targetItem == null || !ReferenceEquals(DraggedItem, targetItem))
+            {
+                //remove the source from the list
+                ShareList.Remove(DraggedItem);
+
+                //get target index
+                var targetIndex = ShareList.IndexOf(targetItem);
+
+                //move source at the target's location
+                ShareList.Insert(targetIndex, DraggedItem);
+
+                //select the dropped item
+                DtgdExample.SelectedItem = DraggedItem;
+            }
+
+            //reset
+            ResetDragDrop();
+        }
+
+
+        /// <summary>
+        /// Closes the popup and resets the
+        /// grid to read-enabled mode.
+        /// </summary>
+        private void ResetDragDrop()
+        {
+            IsDragging = false;
+            popup1.IsOpen = false;
+            DtgdExample.IsReadOnly = false;
+        }
+
+
+        /// <summary>
+        /// Updates the popup's position in case of a drag/drop operation.
+        /// </summary>
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (!IsDragging || e.LeftButton != MouseButtonState.Pressed) return;
+
+            //display the popup if it hasn't been opened yet
+            if (!popup1.IsOpen)
+            {
+                //switch to read-only mode
+                DtgdExample.IsReadOnly = true;
+
+                //make sure the popup is visible
+                popup1.IsOpen = true;
+            }
+
+
+            Size popupSize = new Size(popup1.ActualWidth, popup1.ActualHeight);
+            popup1.PlacementRectangle = new Rect(e.GetPosition(this), popupSize);
+
+            //make sure the row under the grid is being selected
+            Point position = e.GetPosition(DtgdExample);
+            var row = UIHelpers.TryFindFromPoint<DataGridRow>(DtgdExample, position);
+            if (row != null) DtgdExample.SelectedItem = row.Item;
+        }
+
+        #endregion
     }
 
 

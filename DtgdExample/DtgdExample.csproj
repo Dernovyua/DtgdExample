@@ -67,6 +67,7 @@
     <Compile Include="Config\Cfg.cs" />
     <Compile Include="Config\Convertors.cs" />
     <Compile Include="Config\History.cs" />
+    <Compile Include="Config\UIHelpers.cs" />
     <Compile Include="Config\ViewModelBase.cs" />
     <Compile Include="Config\XmlHistory.cs" />
     <Compile Include="MainWindow.xaml.cs">
