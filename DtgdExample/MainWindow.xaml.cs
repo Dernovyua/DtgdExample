@@ -3,6 +3,7 @@ using DtgdExample.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,15 +24,28 @@ namespace DtgdExample
     /// </summary>
     public partial class MainWindow : Window
     {
+        History _history;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
         ObservableCollection<ExampleModel> _exampleModels = new ObservableCollection<ExampleModel>();
+        ObservableCollection<ColumnDetail> _columnDetails = new ObservableCollection<ColumnDetail>();
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (String.IsNullOrEmpty(Properties.Settings.Default.PathSaveSetting))
+            {
+                Properties.Settings.Default.PathSaveSetting =
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\DtgdExample";
+                Properties.Settings.Default.Save();
+            }
+
+            _history = new History();
+            _columnDetails = _history.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
+
             //в случае обычно привязки все довольно просто
             for (int i = 0; i < 10; i++)
             {
@@ -60,7 +74,6 @@ namespace DtgdExample
                 Style DynamicStyle = new Style();
                 DynamicStyle.Setters.Add(new Setter(TextBlock.BackgroundProperty, new Binding("AddColumn[" + i + "].Color") { Converter = new ColorConverterBackGround() })); // Добавляю стиль с нужным конвертером и данные для него руками
                 item.ElementStyle = DynamicStyle;
-                //item.CellStyle = (Style)Resources["ColorConverterBackground"+i]; //??? не подтягивает значения, возможно чего-то не хватает
                 DtgdExample.Columns.Add(item);
 
             }
@@ -73,6 +86,11 @@ namespace DtgdExample
             {
                 _exampleModels[i].AddColumn[0].Color = Colors.Green.ToString();
             }
+        }
+
+        private void BtnSave_Click(object sender, RoutedEventArgs e)
+        {
+            _history.SaveColumnDetails(_columnDetails, Properties.Settings.Default.PathSaveSetting);
         }
     }
 

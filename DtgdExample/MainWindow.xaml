@@ -39,7 +39,8 @@
 
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Сменить цвет" HorizontalAlignment="Left" Margin="633,5,0,0" VerticalAlignment="Top" Width="149" Name="BtnChangeColor" Click="BtnChangeColor_Click"/>
+        <Button Content="Сменить цвет" HorizontalAlignment="Right" Margin="0,5,10,0" VerticalAlignment="Top" Width="149" Name="BtnChangeColor" Click="BtnChangeColor_Click"/>
+        <Button Content="Сохранить" HorizontalAlignment="Right" Margin="0,5,164,0" VerticalAlignment="Top" Width="75" Name="BtnSave" Click="BtnSave_Click"/>
 
     </Grid>
 </Window>

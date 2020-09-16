@@ -66,13 +66,16 @@
     </Compile>
     <Compile Include="Config\Cfg.cs" />
     <Compile Include="Config\Convertors.cs" />
+    <Compile Include="Config\History.cs" />
     <Compile Include="Config\ViewModelBase.cs" />
+    <Compile Include="Config\XmlHistory.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ColumnDetail.cs" />
     <Compile Include="Models\DynamicColumnModel.cs" />
     <Compile Include="Models\ExampleModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
