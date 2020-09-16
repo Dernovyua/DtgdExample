@@ -80,6 +80,10 @@ namespace DtgdExample.Models
             IsShow = info.GetBoolean("IsShow");
 
         }
+        public ColumnDetail()
+        {
+
+        }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {

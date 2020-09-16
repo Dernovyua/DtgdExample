@@ -12,16 +12,16 @@ namespace DtgdExample.Config
     {
         #region Загрузка
 
-        public ObservableCollection<ColumnDetail> LoadColumnDetails(string path)
+        public ObservableCollection<ExampleModel> LoadColumnDetails(string path)
         {
-            return (ObservableCollection<ColumnDetail>)XmlHistory.GetXmlData(XmlHistory.FilenameListColumns, path);
+            return (ObservableCollection<ExampleModel>)XmlHistory.GetXmlData(XmlHistory.FilenameListColumns, path);
         }
 
         #endregion
 
         #region Сохранение
 
-        public void SaveColumnDetails(ObservableCollection<ColumnDetail> symbolDetails, string path)
+        public void SaveColumnDetails(ObservableCollection<ExampleModel> symbolDetails, string path)
         {
             XmlHistory.SetXmlData(XmlHistory.FilenameListColumns, (Object)(symbolDetails.ToList()), path);
         }

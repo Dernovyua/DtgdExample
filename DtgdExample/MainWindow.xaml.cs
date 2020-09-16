@@ -68,14 +68,16 @@ namespace DtgdExample
             }
 
             _history = new History();
-            _columnDetails = _history.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
-
-            //в случае обычно привязки все довольно просто
-            for (int i = 0; i < 10; i++)
+            ShareList = _history.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
+            if (ShareList.Count == 0)
             {
-                ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
-                model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
-                ShareList.Add(model);
+                //в случае обычно привязки все довольно просто
+                for (int i = 0; i < 10; i++)
+                {
+                    ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
+                    model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
+                    ShareList.Add(model);
+                }
             }
 
             //правильно привязать ресурс к колонке добавленой из кода
@@ -114,7 +116,7 @@ namespace DtgdExample
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            _history.SaveColumnDetails(_columnDetails, Properties.Settings.Default.PathSaveSetting);
+            _history.SaveColumnDetails(ShareList, Properties.Settings.Default.PathSaveSetting);
         }
 
 

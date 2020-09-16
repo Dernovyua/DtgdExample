@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace DtgdExample.Config
@@ -31,12 +32,12 @@ namespace DtgdExample.Config
                 {
                     if (File.Exists(path + filename))
                     {
-                        var reader = new XmlSerializer(typeof(List<ColumnDetail>));
+                        var reader = new XmlSerializer(typeof(List<ExampleModel>));
                         StreamReader file = new StreamReader(path + filename);
-                        List<ColumnDetail> result = new List<ColumnDetail>();
-                        result = (List<ColumnDetail>)reader.Deserialize(file);
+                        List<ExampleModel> result = new List<ExampleModel>();
+                        result = (List<ExampleModel>)reader.Deserialize(file);
 
-                        var res = new ObservableCollection<ColumnDetail>();
+                        var res = new ObservableCollection<ExampleModel>();
                         for (int i = 0; i < result.Count; i++)
                         {
                             res.Add(result[i]);
@@ -44,11 +45,11 @@ namespace DtgdExample.Config
 
                         return res;
                     }
-                    return new ObservableCollection<ColumnDetail>();
+                    return new ObservableCollection<ExampleModel>();
                 }
                 catch (Exception)
                 {
-                    return new ObservableCollection<ColumnDetail>();
+                    return new ObservableCollection<ExampleModel>();
                 }
             }
 
@@ -86,13 +87,14 @@ namespace DtgdExample.Config
             {
                 try
                 {
-                    XmlSerializer write = new XmlSerializer(typeof(List<ColumnDetail>));
+                    XmlSerializer write = new XmlSerializer(typeof(List<ExampleModel>));
                     using (StreamWriter file = new StreamWriter(path + filename))
                         write.Serialize(file, list);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    // MainWindow.Log.Error(DateTime.Now + "   " + "Ошибка. Сохранение: " + ex.Message);
+                     //MainWindow.Log.Error(DateTime.Now + "   " + "Ошибка. Сохранение: " + ex.Message);
+                     MessageBox.Show(ex.Message + ex.StackTrace,"Alert");
                 }
             }
 
