@@ -13,12 +13,11 @@
         <convertors:ColorConverterBackGround  x:Key="ColorConverterBackground"></convertors:ColorConverterBackGround>
 
     </Window.Resources>
-    <Grid>
+    <Grid Margin="0,0,0,47">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="388*"/>
         </Grid.RowDefinitions>
-
         <DataGrid Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="DtgdExample"   
                   HorizontalGridLinesBrush="{x:Null}" VerticalGridLinesBrush="#FF4E7294" CanUserAddRows="False" CanUserDeleteRows="False" 
                   GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
@@ -26,7 +25,7 @@
     MouseMove="OnMouseMove">
             <DataGrid.ContextMenu>
                 <ContextMenu Name="dtgrdContextMenu">
-                    
+
                 </ContextMenu>
             </DataGrid.ContextMenu>
 
@@ -47,6 +46,8 @@
         </DataGrid>
         <Button Content="Сменить цвет" HorizontalAlignment="Right" Margin="0,5,10,0" VerticalAlignment="Top" Width="149" Name="BtnChangeColor" Click="BtnChangeColor_Click"/>
         <Button Content="Сохранить" HorizontalAlignment="Right" Margin="0,5,164,0" VerticalAlignment="Top" Width="75" Name="BtnSave" Click="BtnSave_Click"/>
+        <TreeView VerticalAlignment="Bottom" Grid.Row="1" Height="70" Margin="0,0,0,-50" Name="tree">
+        </TreeView>
         <Popup
       x:Name="popup1"
       IsHitTestVisible="False"

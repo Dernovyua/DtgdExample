@@ -1,10 +1,16 @@
-﻿using DtgdExample.Config;
+﻿using AngleSharp.Dom;
+using AngleSharp.Parser.Html;
+using DtgdExample.Config;
 using DtgdExample.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,11 +23,23 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+
 namespace DtgdExample
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+    public class MyArray
+    {
+        public int value { get; set; }
+        public string title { get; set; }
+    }
+
+    public class Root
+    {
+        public List<MyArray> MyArray { get; set; }
+    }
     public partial class MainWindow : Window
     {
         History<ExampleModel> HistoryRowsDetails;
@@ -56,8 +74,40 @@ namespace DtgdExample
         public ObservableCollection<ExampleModel> ExampleModelCollection = new ObservableCollection<ExampleModel>();
         public ObservableCollection<ColumnDetail> ColumnDetails = new ObservableCollection<ColumnDetail>();
 
+        public static void InitiateSSLTrust()
+        {
+            try
+            {
+                //Change SSL checks so that all checks pass
+                ServicePointManager.ServerCertificateValidationCallback =
+                   new RemoteCertificateValidationCallback(
+                        delegate
+                        { return true; }
+                    );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace, "Alert");
+            }
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            System.Net.WebClient client = new System.Net.WebClient();
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            string sHttpResonse = client.DownloadString("https://www.finam.ru/profile/moex-akcii/gazprom/export");
+            List<string> hrefTags = new List<string>();
+
+
+            var parser = new HtmlParser();
+            var document = parser.Parse(sHttpResonse);
+            foreach (IElement element in document.QuerySelectorAll("div.content"))
+            {
+                string str = element.TextContent.Replace($"\t", "").Replace($"\n", "");
+                if (element.TextContent.Contains("Германии")) hrefTags.Add('[' + str.Split('[', ']')[1] +']') ;
+            }
+            List<MyArray> result = JsonConvert.DeserializeObject<List<MyArray>>(hrefTags[0]);
             if (String.IsNullOrEmpty(Properties.Settings.Default.PathSaveSetting))
             {
                 Properties.Settings.Default.PathSaveSetting =
@@ -85,6 +135,10 @@ namespace DtgdExample
 
             DtgdExample.ItemsSource = ExampleModelCollection;
             SetNewColumn();
+            foreach(var res in result)
+            {
+                tree.Items.Add(res.title);
+            }
             if (ColumnDetails.Count != 0)
             {
                 try
@@ -274,7 +328,7 @@ namespace DtgdExample
             CheckBox item = sender as CheckBox;
             try
             {
-                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = Visibility.Visible;
+                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = System.Windows.Visibility.Visible;
             }
             catch (Exception ex)
             {
@@ -287,7 +341,7 @@ namespace DtgdExample
             CheckBox item = sender as CheckBox;
             try
             {
-                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = Visibility.Hidden;
+                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = System.Windows.Visibility.Hidden;
             }
             catch (Exception ex)
             {
