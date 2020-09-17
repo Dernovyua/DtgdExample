@@ -24,7 +24,8 @@ namespace DtgdExample
     /// </summary>
     public partial class MainWindow : Window
     {
-        History<ExampleModel> History;
+        History<ExampleModel> HistoryRowsDetails;
+        History<ColumnDetail> HistoryColumnsDetails;
 
         #region DraggedItem
 
@@ -49,6 +50,7 @@ namespace DtgdExample
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         public ObservableCollection<ExampleModel> ExampleModelCollection = new ObservableCollection<ExampleModel>();
@@ -63,10 +65,11 @@ namespace DtgdExample
                 Properties.Settings.Default.Save();
             }
 
-            History = new History<ExampleModel>();
+            HistoryRowsDetails = new History<ExampleModel>();
+            HistoryColumnsDetails = new History<ColumnDetail>();
 
-            ExampleModelCollection = History.LoadColumnDetails(Properties.Settings.Default.PathSaveSetting);
-
+            ExampleModelCollection = HistoryRowsDetails.LoadDetails(Properties.Settings.Default.PathSaveSetting, "\\RowsDetail.xml");
+            ColumnDetails = HistoryColumnsDetails.LoadDetails(Properties.Settings.Default.PathSaveSetting, "\\ColumnsDetail.xml");
             if (ExampleModelCollection.Count == 0)
             {
                 //в случае обычно привязки все довольно просто
@@ -82,6 +85,30 @@ namespace DtgdExample
 
             DtgdExample.ItemsSource = ExampleModelCollection;
             SetNewColumn();
+            if (ColumnDetails.Count != 0)
+            {
+                try
+                {
+                    foreach (var column in DtgdExample.Columns)
+                    {
+                        var TargetRow = ColumnDetails.Where(x => x.NameColumn == column.Header.ToString()).FirstOrDefault();
+                        column.Visibility = TargetRow.IsShow == true ? System.Windows.Visibility.Visible : System.Windows.Visibility.Hidden;
+                        column.DisplayIndex = TargetRow.Number;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message + ex.StackTrace, "Alert");
+                }
+            }
+            foreach (var column in DtgdExample.Columns)
+            {
+                var checkBox = new CheckBox();
+                checkBox.Content = column.Header.ToString();
+                checkBox.Checked += CheckBox_Checked;
+                checkBox.Unchecked += CheckBox_Unchecked;
+                dtgrdContextMenu.Items.Add(checkBox);
+            }
         }
 
         /// <summary>
@@ -114,9 +141,14 @@ namespace DtgdExample
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            History.SaveColumnDetails(ExampleModelCollection, Properties.Settings.Default.PathSaveSetting);
+            HistoryRowsDetails.SaveDetails(ExampleModelCollection, Properties.Settings.Default.PathSaveSetting, "\\RowsDetail.xml");
+            ColumnDetails.Clear();
+            foreach (var column in DtgdExample.Columns)
+            {
+                ColumnDetails.Add(new ColumnDetail { NameColumn = column.Header.ToString(), IsShow = column.Visibility == System.Windows.Visibility.Visible ? true : false, Number = column.DisplayIndex });
+            }
+            HistoryColumnsDetails.SaveDetails(ColumnDetails, Properties.Settings.Default.PathSaveSetting, "\\ColumnsDetail.xml");
         }
-
 
         #region edit mode monitoring
 
@@ -235,6 +267,34 @@ namespace DtgdExample
         }
 
         #endregion
+
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CheckBox item = sender as CheckBox;
+            try
+            {
+                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = Visibility.Visible;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace, "Alert");
+            }
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox item = sender as CheckBox;
+            try
+            {
+                DtgdExample.Columns.Where(x => x.Header.ToString() == item.Content.ToString()).FirstOrDefault().Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace, "Alert");
+            }
+
+        }
     }
 
 

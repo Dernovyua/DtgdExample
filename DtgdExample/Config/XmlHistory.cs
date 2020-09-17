@@ -14,7 +14,7 @@ namespace DtgdExample.Config
     public class XmlHistory<T>
     {
 
-        public static string FilenameListColumns = "\\ListColumns.xml";
+        
 
         public static object GetXmlData(string filename, string pathSave)
         {
@@ -26,8 +26,7 @@ namespace DtgdExample.Config
             }
 
             #region ColumnsDetail
-            if (filename == FilenameListColumns)
-            {
+            
                 try
                 {
                     if (File.Exists(path + filename))
@@ -51,11 +50,9 @@ namespace DtgdExample.Config
                 {
                     return new ObservableCollection<T>();
                 }
-            }
+            
 
             #endregion
-
-            return null;
         }
 
 
@@ -81,8 +78,7 @@ namespace DtgdExample.Config
 
             #region ColumnsDetail
 
-            if (filename == FilenameListColumns)
-            {
+            
                 try
                 {
                     XmlSerializer write = new XmlSerializer(typeof(List<T>));
@@ -94,7 +90,7 @@ namespace DtgdExample.Config
                      //MainWindow.Log.Error(DateTime.Now + "   " + "Ошибка. Сохранение: " + ex.Message);
                      MessageBox.Show(ex.Message + ex.StackTrace,"Alert");
                 }
-            }
+            
 
             #endregion
 

@@ -11,19 +11,19 @@ namespace DtgdExample.Config
     public class History<T>
     {
         #region Загрузка
-        public ObservableCollection<T> LoadColumnDetails(string path)
+        public ObservableCollection<T> LoadDetails(string path, string fileName)
         {
-            return (ObservableCollection<T>)XmlHistory<T>.GetXmlData(XmlHistory<T>.FilenameListColumns, path);
+            return (ObservableCollection<T>)XmlHistory<T>.GetXmlData(fileName, path);
         }
 
         #endregion
 
         #region Сохранение
 
-        public void SaveColumnDetails(ObservableCollection<T> symbolDetails, string path)
+        public void SaveDetails(ObservableCollection<T> symbolDetails,string path, string fileName)
         {
             
-           XmlHistory<T>.SetXmlData(XmlHistory<T>.FilenameListColumns, (Object)(symbolDetails.ToList()), path);
+           XmlHistory<T>.SetXmlData(fileName, (Object)(symbolDetails.ToList()), path);
         }
 
         #endregion

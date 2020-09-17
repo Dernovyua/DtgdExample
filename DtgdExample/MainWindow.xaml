@@ -24,6 +24,11 @@
                   GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
                    RowHeaderWidth="0"  Height="auto" VerticalAlignment="Stretch" Grid.Row="1" PreviewMouseLeftButtonDown="OnMouseLeftButtonDown" SelectionMode="Single" MouseLeftButtonUp="OnMouseLeftButtonUp"
     MouseMove="OnMouseMove">
+            <DataGrid.ContextMenu>
+                <ContextMenu Name="dtgrdContextMenu">
+                    
+                </ContextMenu>
+            </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
 
