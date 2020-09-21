@@ -11,14 +11,17 @@
     <Window.Resources>
 
         <convertors:ColorConverterBackGround  x:Key="ColorConverterBackground"></convertors:ColorConverterBackGround>
-
     </Window.Resources>
     <Grid Margin="0,0,0,226">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="388*"/>
         </Grid.RowDefinitions>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top" Background="{x:Null}">
+                <MenuItem x:Name="menuLanguage" Header="{DynamicResource m_Choice}" />
+            </Menu>
+        </DockPanel>
         <DataGrid Grid.Column="0" IsReadOnly="True" AutoGenerateColumns="False" Name="DtgdExample"   
                   HorizontalGridLinesBrush="{x:Null}" VerticalGridLinesBrush="#FF4E7294" CanUserAddRows="False" CanUserDeleteRows="False" 
                   GridLinesVisibility="Vertical" IsSynchronizedWithCurrentItem="{x:Null}" 
@@ -46,7 +49,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="Сменить цвет" HorizontalAlignment="Right" Margin="0,5,10,0" VerticalAlignment="Top" Width="149" Name="BtnChangeColor" Click="BtnChangeColor_Click" Grid.Column="1"/>
-        <Button Content="Сохранить" HorizontalAlignment="Right" Margin="0,5,164,0" VerticalAlignment="Top" Width="75" Name="BtnSave" Click="BtnSave_Click" Grid.Column="1"/>
+        <Button Content="{DynamicResource m_Save}" HorizontalAlignment="Right" Margin="0,5,164,0" VerticalAlignment="Top" Width="75" Name="BtnSave" Click="BtnSave_Click" Grid.Column="1"/>
         <TreeView Grid.Row="1" Margin="0,163,0,-227" Name="tree"/>
         <Popup
       x:Name="popup1"
