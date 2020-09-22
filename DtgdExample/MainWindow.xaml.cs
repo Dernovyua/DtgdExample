@@ -43,6 +43,7 @@ namespace DtgdExample
     }
     public partial class MainWindow : Window
     {
+        public string TypeStratetgyContanier = (string)Application.Current.FindResource("m_Container");
         History<ExampleModel> HistoryRowsDetails;
         History<ColumnDetail> HistoryColumnsDetails;
 
@@ -166,7 +167,7 @@ namespace DtgdExample
                 //в случае обычно привязки все довольно просто
                 for (int i = 0; i < 10; i++)
                 {
-                    ExampleModel model = new ExampleModel { Name = "Строка " + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
+                    ExampleModel model = new ExampleModel { Name = TypeStratetgyContanier + (i + 1), NumberRow = i + 1, ColorBackground = Colors.Aqua.ToString() };
                     model.AddColumn.Add(new DynamicColumnModel { Value = i * 4, Color = Colors.Red.ToString() });
                     ExampleModelCollection.Add(model);
                 }

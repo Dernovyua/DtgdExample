@@ -4,4 +4,5 @@
 
   <v:String x:Key="m_Choice">Выбор языка</v:String>
     <v:String x:Key="m_Save">Сохранить</v:String>
+    <v:String x:Key="m_Container">Контейнер</v:String>
 </ResourceDictionary>
